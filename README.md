@@ -1,3 +1,37 @@
+
+
+```
+TODO: tailscale for development
+TODO: docker-compose.yml
+TODO: docker-compose - leptos
+TODO: docker-compose - mqtt
+TODO: docker-compose - bdd
+TODO: docker-compose - api
+TODO: docker-compose - postgres
+TODO: mqtt
+TODO: leptos
+TODO: api
+TODO: postgres
+TODO: CI
+TODO: CD
+```
+
+```
+TODO: tailscale public website
+TODO: tailscale server monitoring
+```
+
+```
+DONE: tailscale on startup
+  systemctl enable tailscaled  
+```
+
+```
+DONE: tailscale proxmox
+  systemctl enable tailscaled  
+```
+
+
 ```
 cargo new simple
 
@@ -29,11 +63,3 @@ https://login.tailscale.com/admin/machines
 
 ```
 
-```
-TODO: tailscale on startup
-TODO: tailscale for development
-TODO: tailscale public website
-TODO: tailscale server monitoring
-
-
-```

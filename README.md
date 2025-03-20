@@ -1,6 +1,7 @@
 
 
 ```
+TODO: linux monitoring https://mmonit.com/monit/documentation/monit.html
 TODO: tailscale for development
 TODO: docker-compose.yml
 TODO: docker-compose - leptos
@@ -61,6 +62,22 @@ https://tailscale.com/kb/1031/install-linux
 https://login.tailscale.com/admin/machines
 
 
+```
+
+```sh
+#!/bin/bash
+
+ case $1 in
+  start)
+     /usr/bin/myprogram &
+     echo $! > /var/run/xyz.pid ;
+     ;;
+   stop)
+     kill `cat /var/run/xyz.pid` ;;
+   *)
+     echo "usage: xyz {start|stop}" ;;
+ esac
+ exit 0
 ```
 
 ---------------------------

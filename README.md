@@ -64,6 +64,57 @@ https://login.tailscale.com/admin/machines
 
 ```
 
+
+
+```
+TODO: Read mail from gmail, leggere mail da rust
+```
+
+```rust
+use imap_client::{
+    client::{Client, Session},
+    config::{Config, SslConfig},
+    error::Result,
+    types::Address,
+};
+
+fn main() -> Result<()> {
+    let config = Config::new()
+        .domain("imap.gmail.com")
+        .port(993)
+        .ssl_config(SslConfig::default())
+        .auth_login("your_email@gmail.com", "your_app_password")?;
+
+    let mut session: Session<Client> = Client::connect(config)?;
+
+    session.select("INBOX")?;
+
+    let messages = session.fetch("1:*", "ENVELOPE")?;
+
+    for message in messages.iter() {
+        if let Some(envelope) = message.envelope() {
+            println!("Subject: {:?}", envelope.subject);
+            if let Some(addresses) = &envelope.from {
+                for address in addresses {
+                    match address {
+                        Address::Mailbox(mailbox) => {
+                            println!("From: {}@{}", mailbox.name.as_deref().unwrap_or(""), mailbox.host.as_deref().unwrap_or(""));
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+    }
+
+    session.logout()?;
+
+    Ok(())
+}
+```
+
+
+
 ```sh
 #!/bin/bash
 

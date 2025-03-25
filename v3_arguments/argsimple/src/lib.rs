@@ -1,5 +1,9 @@
 use std::env;
 
+struct QueryText{
+  query: String,
+  file_path: String,
+}
 pub fn parameter(){
     println!(" -- parameter() -- ");
     let args: Vec<String> = env::args().collect();

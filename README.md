@@ -1,6 +1,27 @@
 
 
 ```
+TODO: args, file, tdd, env
+
+args: 
+https://doc.rust-lang.org/book/ch12-00-an-io-project.html
+https://doc.rust-lang.org/book/ch12-01-accepting-command-line-arguments.html
+
+File:
+https://doc.rust-lang.org/book/ch12-02-reading-a-file.html
+
+TDD:
+https://doc.rust-lang.org/book/ch12-04-testing-the-librarys-functionality.html
+
+Environment Variables:
+https://doc.rust-lang.org/book/ch12-05-working-with-environment-variables.html
+
+Standard Output, Standard Error:
+https://doc.rust-lang.org/book/ch12-06-writing-to-stderr-instead-of-stdout.html
+
+```
+
+```
 TODO: linux monitoring https://mmonit.com/monit/documentation/monit.html
 TODO: tailscale for development
 TODO: docker-compose.yml
@@ -31,6 +52,8 @@ DONE: tailscale on startup
 DONE: tailscale proxmox
   systemctl enable tailscaled  
 ```
+
+
 
 
 ```

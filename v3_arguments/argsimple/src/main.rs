@@ -12,3 +12,4 @@ fn main() {
     println!("call with: simple [query] [file], please.");
   }
 }
+

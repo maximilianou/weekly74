@@ -1,18 +1,20 @@
 
 Rinnovamento dell’Alleanza d’amore
 ```
-”O mia Signora e Madre mia, io mi offro interamente a te;
+O mia Signora e Madre mia, io mi offro interamente a te;
 e per testimoniarti la mia dedizione, ti consacro oggi i miei occhi,
 le mie orecchie, la mia bocca, il mio cuore e tutto me stesso.
 Poiché ti appartengo, o buona Madre,
-proteggimi e custodiscimi come bene e proprietà tua. Amen. 
+proteggimi e custodiscimi come bene e proprietà tua. 
+Amen. 
 ```
 FIDUCIA
 ```
-“Confido nel tuo potere e nella tua bontà.
+Confido nel tuo potere e nella tua bontà.
 A Te m’affido con filiale pietà
 In ogni situazione la mia fiducia
-sei Tu, o Madre Ammirabile; e tuo Figlio Gesù.” Amen
+sei Tu, o Madre Ammirabile; e tuo Figlio Gesù.
+Amen
 ```
 
 Prayer for the daily renewal of the Covenant of Love
@@ -26,7 +28,6 @@ my entire self without reserve.
 As I am your own, my good Mother,
 guard me and defend me
 as your property and possession.
-
 Amen
 ```
 Confidence

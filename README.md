@@ -274,6 +274,96 @@ fn main() {
 
 ```
 
+https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#fixing-the-error-handling
+
+
+```rust
+fn seventh_step(){
+  let args: Vec<String> = env::args().collect();
+  let config = Config::build(&args);
+  println!("Searching for {}", config.clone().unwrap().query);
+  println!("In file {}", config.clone().unwrap().file_path);
+  let contents = fs::read_to_string(config.clone().unwrap().file_path)
+               .expect("Should have been able to read the file.");
+  println!("With Text:\n{contents}");
+
+}
+#[derive(Clone)]
+struct Config {
+  query: String,
+  file_path: String,
+}
+impl Config {
+  fn build(args: &[String]) -> Result<Config, &'static str>{
+    if args.len() < 3 {
+      return Err("Not enough arguments");
+    }
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+    Ok( Config { query, file_path } )
+  }
+}
+
+fn main() {
+//  first_step();
+//  second_step();
+//  thirth_step();
+//  fourth_step();
+//  fifth_step();
+// sixth_step();
+  seventh_step();
+}
+
+```
+
+
+```rust
+use std::process;
+fn eigthth_step(){
+  let args: Vec<String> = env::args().collect();
+
+  let config = Config::build(&args).unwrap_or_else(|err| {
+    println!("Problem parsing argments: {err}");
+    process::exit(1);
+  } );
+
+  println!("Searching for {}", config.clone().query);
+  println!("In file {}", config.clone().file_path);
+  let contents = fs::read_to_string(config.clone().file_path)
+               .expect("Should have been able to read the file.");
+  println!("With Text:\n{contents}");
+
+}
+#[derive(Clone)]
+struct Config {
+  query: String,
+  file_path: String,
+}
+impl Config {
+  fn build(args: &[String]) -> Result<Config, &'static str>{
+    if args.len() < 3 {
+      return Err("Not enough arguments");
+    }
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+    Ok( Config { query, file_path } )
+  }
+}
+
+fn main() {
+//  first_step();
+//  second_step();
+//  thirth_step();
+//  fourth_step();
+//  fifth_step();
+//  sixth_step();
+//  seventh_step();
+eigthth_step();
+}
+
+```
+https://doc.rust-lang.org/book/ch12-03-improving-error-handling-and-modularity.html#extracting-logic-from-main
+
 
 ---------------------------
 

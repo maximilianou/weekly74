@@ -1,17 +1,22 @@
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn case_sensitive(){
-        let query = "duck";
-        let contents = "Rust: safe, fast, productive. Pick three. Duct tape.";
-        assert_eq!(vec!["save, fast, productive."], search(query, contents));
+// src/lib.rs
+use std::error::Error;
+use std::fs;
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+}
+impl Config {
+    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+      if args.len() < 3 {
+        return Err("Not enough arguments");
+      }
+      let query = args[1].clone();
+      let file_path = args[2].clone();
+      Ok( Config { query, file_path } ) 
     }
-    #[test]
-    fn case_insensitive(){
-        let query = "rUst";
-        let contents = "Rust: safe, fast, productive. Pick three. Trust me.";
-        assert_eq!(vec!["Rust:", "Trust me."], search_case_insensitive(query, contents));
-    }
+}
+pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
+  let contents = fs::read_to_string(config.file_path)?;
+  println!("With text: \n{contents}");
+  Ok(())
 }

@@ -1,6 +1,6 @@
 // src/main
-use std::env;
-use std::fs;
+//use std::env;
+//use std::fs;
 /*
 fn first_step(){
   let args: Vec<String> = env::args().collect();
@@ -136,6 +136,9 @@ impl Config {
   }
 }
 */
+/*
+use std::env;
+use std::fs;
 use std::process;
 fn eigthth_step(){
   let args: Vec<String> = env::args().collect();
@@ -167,6 +170,122 @@ impl Config {
     Ok( Config { query, file_path } )
   }
 }
+*/
+/*
+use std::env;
+use std::fs;
+use std::process;
+fn ninth_step(){
+  let args: Vec<String> = env::args().collect();
+
+  let config = Config::build(&args).unwrap_or_else(|err| {
+    println!("Problem parsing argments: {err}");
+    process::exit(1);
+  } );
+
+  println!("Searching for {}", config.query);
+  println!("In file {}", config.file_path);
+  run(config);
+}
+fn run(config: Config){
+  let contents = fs::read_to_string(config.file_path)
+  .expect("Should have been able to read the file.");
+  println!("With Text:\n{contents}");
+
+}
+#[derive(Clone)]
+struct Config {
+  query: String,
+  file_path: String,
+}
+impl Config {
+  fn build(args: &[String]) -> Result<Config, &'static str>{
+    if args.len() < 3 {
+      return Err("Not enough arguments");
+    }
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+    Ok( Config { query, file_path } )
+  }
+}
+*/
+/*
+use std::env;
+use std::fs;
+use std::process;
+use std::error::Error;
+fn tenth_step(){
+  let args: Vec<String> = env::args().collect();
+
+  let config = Config::build(&args).unwrap_or_else(|err| {
+    println!("Problem parsing argments: {err}");
+    process::exit(1);
+  } );
+
+  println!("Searching for {}", config.query);
+  println!("In file {}", config.file_path);
+  let _ = run(config);
+}
+fn run(config: Config) -> Result<(), Box<dyn Error>>{
+  let contents = fs::read_to_string(config.file_path)?;
+  println!("With Text:\n{contents}");
+  Ok(())
+}
+#[derive(Clone)]
+struct Config {
+  query: String,
+  file_path: String,
+}
+impl Config {
+  fn build(args: &[String]) -> Result<Config, &'static str>{
+    if args.len() < 3 {
+      return Err("Not enough arguments");
+    }
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+    Ok( Config { query, file_path } )
+  }
+}
+*/
+use std::env;
+use std::fs;
+use std::process;
+use std::error::Error;
+fn eleventh_step(){
+  let args: Vec<String> = env::args().collect();
+
+  let config = Config::build(&args).unwrap_or_else(|err| {
+    println!("Problem parsing argments: {err}");
+    process::exit(1);
+  } );
+
+  println!("Searching for {}", config.query);
+  println!("In file {}", config.file_path);
+  if let Err(e) = run(config) {
+    println!("Application error {e}");
+    process::exit(1);
+  }
+}
+fn run(config: Config) -> Result<(), Box<dyn Error>>{
+  let contents = fs::read_to_string(config.file_path)?;
+  println!("With Text:\n{contents}");
+  Ok(())
+}
+#[derive(Clone)]
+struct Config {
+  query: String,
+  file_path: String,
+}
+impl Config {
+  fn build(args: &[String]) -> Result<Config, &'static str>{
+    if args.len() < 3 {
+      return Err("Not enough arguments");
+    }
+    let query = args[1].clone();
+    let file_path = args[2].clone();
+    Ok( Config { query, file_path } )
+  }
+}
 
 fn main() {
 //  first_step();
@@ -176,5 +295,8 @@ fn main() {
 //  fifth_step();
 //  sixth_step();
 //  seventh_step();
-eigthth_step();
+//  eigthth_step();
+//  ninth_step();
+//  tenth_step();
+    eleventh_step();
 }

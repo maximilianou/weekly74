@@ -496,6 +496,149 @@ fn twelveth_step(){
   }
 }
 ```
+
+TDD - Test Driven Development
+
+https://doc.rust-lang.org/book/ch12-04-testing-the-librarys-functionality.html#developing-the-librarys-functionality-with-test-driven-development
+
+
+```rust
+// src/lib.rs
+use std::error::Error;
+use std::fs;
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+}
+impl Config {
+    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+      if args.len() < 3 {
+        return Err("Not enough arguments");
+      }
+      let query = args[1].clone();
+      let file_path = args[2].clone();
+      Ok( Config { query, file_path } ) 
+    }
+}
+pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
+  let contents = fs::read_to_string(config.file_path)?;
+  Ok(())
+}
+
+pub fn search<'a>(query: &str, contents: &'a str)-> Vec<&'a str>{
+  let mut results = Vec::new();
+  for line in contents.lines(){
+    if line.contains(query){
+      results.push(line);
+    }
+  }
+  results
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  #[test]
+  fn one_result(){
+    let query = "affido";
+    let contents = "\
+Confido nel tuo potere e nella tua bontà.
+A Te m'affido con filiale pietà
+In ogni situazione la mia fiducia
+sei Tu, o Madre Ammirabile; e tuo Figlio Gesù.
+Amen.
+    ";
+    assert_eq!(vec!["A Te m'affido con filiale pietà"], search(query, contents));
+  }
+}
+```
+
+```rust
+// src/main.rs
+use std::env;
+use std::process;
+use simpletdd::Config;
+fn thirteenth_step(){
+  let args: Vec<String> = env::args().collect();
+  let config = Config::build(&args).unwrap_or_else(|err| {
+    println!("Problem parsing argments: {err}");
+    process::exit(1);
+  } );
+  println!("Searching for {}", config.query);
+  println!("In file {}", config.file_path);
+  if let Err(e) = simpletdd::run(config) {
+    println!("Application error {e}");
+    process::exit(1);
+  }
+}
+
+fn main() {
+    thirteenth_step();
+}
+```
+
+
+```rust
+// src/lib.rs
+use std::error::Error;
+use std::fs;
+pub struct Config {
+    pub query: String,
+    pub file_path: String,
+}
+impl Config {
+    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+      if args.len() < 3 {
+        return Err("Not enough arguments");
+      }
+      let query = args[1].clone();
+      let file_path = args[2].clone();
+      Ok( Config { query, file_path } ) 
+    }
+}
+pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
+  let contents = fs::read_to_string(config.file_path)?;
+  for line in search(&config.query, &contents){
+    println!("{line}");
+  }
+  Ok(())
+}
+
+pub fn search<'a>(query: &str, contents: &'a str)-> Vec<&'a str>{
+  let mut results = Vec::new();
+  for line in contents.lines(){
+    if line.contains(query){
+      results.push(line);
+    }
+  }
+  results
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  #[test]
+  fn one_result(){
+    let query = "affido";
+    let contents = "\
+Confido nel tuo potere e nella tua bontà.
+A Te m'affido con filiale pietà
+In ogni situazione la mia fiducia
+sei Tu, o Madre Ammirabile; e tuo Figlio Gesù.
+Amen.
+    ";
+    assert_eq!(vec!["A Te m'affido con filiale pietà"], search(query, contents));
+  }
+}
+```
+
+
+https://doc.rust-lang.org/book/ch12-05-working-with-environment-variables.html
+
+```rust
+```
+
+
 ---------------------------
 
 

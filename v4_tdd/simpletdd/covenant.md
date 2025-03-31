@@ -1,5 +1,5 @@
 
-Rinnovamento dell’Alleanza d’amore
+Rinnovamento dell'Alleanza d'amore
 ```
 O mia Signora e Madre mia, io mi offro interamente a te;
 e per testimoniarti la mia dedizione, ti consacro oggi i miei occhi,
@@ -11,7 +11,7 @@ Amen.
 FIDUCIA
 ```
 Confido nel tuo potere e nella tua bontà.
-A Te m’affido con filiale pietà
+A Te m'affido con filiale pietà
 In ogni situazione la mia fiducia
 sei Tu, o Madre Ammirabile; e tuo Figlio Gesù.
 Amen

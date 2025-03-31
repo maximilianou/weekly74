@@ -37,7 +37,7 @@ pub fn search<'a>(query: &str, contents: &'a str)-> Vec<&'a str>{
 mod tests {
   use super::*;
   #[test]
-  fn one_result(){
+  fn case_sensitive(){
     let query = "affido";
     let contents = "\
 Confido nel tuo potere e nella tua bontà.
@@ -48,4 +48,17 @@ Amen.
     ";
     assert_eq!(vec!["A Te m'affido con filiale pietà"], search(query, contents));
   }
+  #[test]
+  fn case_insensitive(){
+    let query = "Fiducia";
+    let contents = "\
+Confido nel tuo potere e nella tua bontà.
+A Te m'affido con filiale pietà
+In ogni situazione la mia fiducia
+sei Tu, o Madre Ammirabile; e tuo Figlio Gesù.
+Amen.
+    ";
+    assert_eq!(vec!["In ogni situazione la mia fiducia"], search_case_insensitive(query, contents));
+  }
+
 }

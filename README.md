@@ -820,9 +820,11 @@ debian@devdesk:~/projects/weekly74/v4_tdd/simpletdd$
 ```
 
 ```
+                            ------------
 command line parameters  -> | program  | -> std output 
                             |          |
 env variables            -> |          | -> std error
+                            ------------
 ```
 
 

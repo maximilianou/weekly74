@@ -808,6 +808,24 @@ Amen.
 ```
 
 
+```sh
+debian@devdesk:~/projects/weekly74/v4_tdd/simpletdd$ cargo run > output.txt
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/simpletdd`
+
+debian@devdesk:~/projects/weekly74/v4_tdd/simpletdd$ cat output.txt
+Problem parsing argments: Not enough arguments
+
+debian@devdesk:~/projects/weekly74/v4_tdd/simpletdd$ 
+```
+
+```
+command line parameters  -> | program  | -> std output 
+                            |          |
+env variables            -> |          | -> std error
+```
+
+
 
 
 

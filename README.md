@@ -42,6 +42,11 @@ iface ens18 inet static
   address 192.168.1.121/24
   gateway 192.168.1.1
 
+- exit node
+- permit forward
+- subnet
+dev01@srv21:~$ tailscale up --advertise-exit-node --advertise-routes=192.168.1.0/24
+
 
 TODO: docker-compose.yml
 TODO: docker-compose - leptos

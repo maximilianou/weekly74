@@ -79,6 +79,37 @@ DONE: tailscale proxmox
 
 
 
+```sh
+debian@debian:~/projects/weekly74/v5_tdd_sendmail/environment$ APP_cONFIG=123 cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/environment`
+{"config": "123", "application": "cc", "app": "applicationEnvironment", "c": "d", "version": "v10", "a": "b", "setting": "a1"}
+```
+
+```rs
+use std::collections::HashMap;
+use config::Config;
+fn main() {
+    let settings = Config::builder()
+        // Add in `./Settings.yaml`
+        .add_source(config::File::with_name("Settings"))
+        .add_source(config::File::with_name(".env"))
+        .add_source(config::File::with_name(".env_json"))
+        // Add in settings from the environment (with a prefix of APP)
+        // Eg.. `APP_DEBUG=1 ./target/app` would set the `debug` key
+        .add_source(config::Environment::with_prefix("APP"))
+        .build()
+        .unwrap();
+    // Print out our settings (as a HashMap)
+    println!(
+        "{:?}",
+        settings
+            .try_deserialize::<HashMap<String, String>>()
+            .unwrap()
+    );
+}
+```
+
 
 ```
 cargo new simple

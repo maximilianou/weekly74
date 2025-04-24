@@ -10,6 +10,7 @@ use lettre::{
     Transport,
 };
 
+#[derive(Debug)]
 pub struct SimpleEmail {
   pub from: String,
   pub reply_to: String,
@@ -18,15 +19,18 @@ pub struct SimpleEmail {
   pub subject: String,
   pub body: String,
 }
+#[derive(Debug)]
 pub struct SimpleCredentials {
   pub usr: String,
   pub psw: String,
 }
+#[derive(Debug)]
 pub struct SimpleMailer {
   pub credentials: SimpleCredentials,
   pub smtp: String,
 }
 
+#[derive(Debug)]
 pub struct SimpleMailConfig {
   pub email: SimpleEmail,
   pub mailer: SimpleMailer,
@@ -64,7 +68,7 @@ impl SimpleMailConfig {
        { usr: settings.get("sm_cred_usr").unwrap(), 
          psw: settings.get("sm_cred_psw").unwrap() };
 
-      
+
       // config from filesystem
       let sm = SimpleMailer {
         credentials: sc,
@@ -86,12 +90,11 @@ mod tests {
     #[test]
     fn test_config(){
         let config = SimpleMailConfig::build();
-        assert_eq!((), config.unwrap());
+        assert_eq!("Admin <admin@simpledoers.work>", config.unwrap().email.from);
     }
     #[test]
     fn test_send_config_implicit(){
       let config = SimpleMailConfig::build();
       assert_eq!((), simple_send(config.unwrap()).unwrap());
-
     }
  }

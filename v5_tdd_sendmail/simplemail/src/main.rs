@@ -1,6 +1,9 @@
+use simplemail::SimpleMailConfig;
 fn main() {
 
-
-    println!("Hello, world!");
+    println!("--- main() --- ");
+    let smc = SimpleMailConfig::build();
+    println!("{:#?}", &smc);
+    println!("--- main() --- ");
 
 }

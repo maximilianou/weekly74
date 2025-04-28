@@ -79,9 +79,35 @@ pub mod simplemail {
         }
     }
 
-    pub fn simple_send(_config: SimpleMailConfig) -> Result<(), Box<dyn Error>> {
+    pub fn simple_send(config: SimpleMailConfig) -> Result<String, Box<dyn Error>> {
+      tracing_subscriber::fmt::init();
 
-        Ok(())
+      let email = Message::builder()
+          .from(config.email.from.parse().unwrap())
+          .reply_to(config.email.reply_to.parse().unwrap())
+          .to(config.email.to.parse().unwrap())
+          .subject(config.email.subject)
+          .header(config.email.header_content_type)
+          .body(String::from(config.email.body))
+          .unwrap();
+  
+      let creds = Credentials::new(config.mailer.credentials.usr.to_owned(), 
+      config.mailer.credentials.psw.to_owned());
+  
+      // Open a remote connection to gmail
+      let mailer = SmtpTransport::relay(&config.mailer.smtp)
+          .unwrap()
+          .credentials(creds)
+          .build();
+  
+      // Send the email
+      match mailer.send(&email) {
+        Ok(_) => {
+            println!("Email sent successfully!"); 
+            Ok("Email sent successfully!".to_string())
+        },
+        Err(e) => panic!("Could not send email: {e:?}"),
+      }
     }
 }
 

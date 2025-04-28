@@ -1,5 +1,5 @@
 sm_from: "Admin <admin@simpledoers.work>"
 sm_reply_to: "Admin <admin@simpledoers.work>"
 sm_to: "Dev <dev@simpledoers.work>"
-sm_subject: "Hi, from rust smtp"
+sm_subject: "Status Rust"
 sm_body: "target/body.md"

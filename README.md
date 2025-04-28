@@ -79,14 +79,21 @@ DONE: tailscale proxmox
 
 
 
-```
+```sh
 top -n 1 -b | head -n5 > target/body.md
 
 debian@debian:~/projects/weekly74/v5_tdd_sendmail/simplemail$ top -n 1 -b | head -n5 > target/body.md
 ```
 
 
+```rs
+    use chrono::{DateTime, Local};
 
+    let curr_time: DateTime<Local> = Local::now();
+    let curr_time_format = curr_time.format("%Y%m%d");
+    println!("{}", curr_time_format);
+
+```
 
 
 

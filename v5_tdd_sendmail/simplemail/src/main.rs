@@ -1,4 +1,5 @@
-use simplemail::SimpleMailConfig;
+//simplemail/src/main.rs
+use simplemail::simplemail::SimpleMailConfig;
 fn main() {
 
     println!("--- main() --- ");

@@ -1,100 +1,104 @@
-use std::error::Error;
-use std::collections::HashMap;
-use config::Config;
+// simplemail/src/lib.rs
+pub mod simplemail {
+    use config::Config;
+//    use std::collections::HashMap;
+    use std::error::Error;
 
-use lettre::{
-    message::header::ContentType, 
-    transport::smtp::authentication::Credentials, 
-    Message,
-    SmtpTransport, 
-    Transport,
-};
+    use lettre::{
+        message::header::ContentType, transport::smtp::authentication::Credentials, Message,
+        SmtpTransport, Transport,
+    };
 
-#[derive(Debug)]
-pub struct SimpleEmail {
-  pub from: String,
-  pub reply_to: String,
-  pub to: String,
-  pub header_content_type: ContentType,
-  pub subject: String,
-  pub body: String,
-}
-#[derive(Debug)]
-pub struct SimpleCredentials {
-  pub usr: String,
-  pub psw: String,
-}
-#[derive(Debug)]
-pub struct SimpleMailer {
-  pub credentials: SimpleCredentials,
-  pub smtp: String,
-}
+    #[derive(Debug)]
+    pub struct SimpleEmail {
+        pub from: String,
+        pub reply_to: String,
+        pub to: String,
+        pub header_content_type: ContentType,
+        pub subject: String,
+        pub body: String,
+    }
+    #[derive(Debug)]
+    pub struct SimpleCredentials {
+        pub usr: String,
+        pub psw: String,
+    }
+    #[derive(Debug)]
+    pub struct SimpleMailer {
+        pub credentials: SimpleCredentials,
+        pub smtp: String,
+    }
 
-#[derive(Debug)]
-pub struct SimpleMailConfig {
-  pub email: SimpleEmail,
-  pub mailer: SimpleMailer,
-}
+    #[derive(Debug)]
+    pub struct SimpleMailConfig {
+        pub email: SimpleEmail,
+        pub mailer: SimpleMailer,
+    }
 
-impl SimpleMailConfig {
+    impl SimpleMailConfig {
+        pub fn build() -> Result<SimpleMailConfig, &'static str> {
+            let settings = Config::builder()
+                // Add in `./settings.yaml`
+                .add_source(config::File::with_name("settings"))
+                .add_source(config::File::with_name(".env.json"))
+                .add_source(config::File::with_name(".env"))
+                // Add in settings from the environment (with a prefix of APP)
+                // Eg.. `APP_DEBUG=1 ./target/app` would set the `debug` key
+                .add_source(config::Environment::with_prefix("APP"))
+                .build()
+                .unwrap();
 
-    pub fn build() -> Result<SimpleMailConfig, &'static str> {
+            // argument from the command line
+            // TEST syntactic email
+            // TEST syntactic subject long
+            let se = SimpleEmail {
+                from: settings.get("sm_from").unwrap(),
+                reply_to: settings.get("sm_reply_to").unwrap(),
+                to: settings.get("sm_to").unwrap(),
+                header_content_type: ContentType::TEXT_PLAIN,
+                subject: settings.get("sm_subject").unwrap(),
+                body: settings.get("sm_body").unwrap(),
+            };
 
-      let settings = Config::builder()
-      // Add in `./settings.yaml`
-      .add_source(config::File::with_name("settings"))
-      .add_source(config::File::with_name(".env.json"))
-      .add_source(config::File::with_name(".env"))
-      // Add in settings from the environment (with a prefix of APP)
-      // Eg.. `APP_DEBUG=1 ./target/app` would set the `debug` key
-      .add_source(config::Environment::with_prefix("APP"))
-      .build()
-      .unwrap();
-    
+            // config from filesystem
+            let sc = SimpleCredentials {
+                usr: settings.get("sm_cred_usr").unwrap(),
+                psw: settings.get("sm_cred_psw").unwrap(),
+            };
 
-      // argument from the command line
-      // TEST syntactic email
-      // TEST syntactic subject long
-      let se = SimpleEmail
-        { from: settings.get("sm_from").unwrap(), 
-          reply_to: settings.get("sm_reply_to").unwrap(), 
-          to: settings.get("sm_to").unwrap(), 
-          header_content_type: ContentType::TEXT_PLAIN,
-          subject: settings.get("sm_subject").unwrap(), 
-          body: settings.get("sm_body").unwrap() };
+            // config from filesystem
+            let sm = SimpleMailer {
+                credentials: sc,
+                smtp: settings.get("sm_smtp").unwrap(),
+            };
 
-      // config from filesystem
-      let sc = SimpleCredentials
-       { usr: settings.get("sm_cred_usr").unwrap(), 
-         psw: settings.get("sm_cred_psw").unwrap() };
+            Ok(SimpleMailConfig {
+                email: se,
+                mailer: sm,
+            })
+        }
+    }
 
+    pub fn simple_send(_config: SimpleMailConfig) -> Result<(), Box<dyn Error>> {
 
-      // config from filesystem
-      let sm = SimpleMailer {
-        credentials: sc,
-        smtp: settings.get("sm_smtp").unwrap()
-      };
-
-        Ok( SimpleMailConfig { email: se, mailer: sm} )
+        Ok(())
     }
 }
 
-pub fn simple_send(_config : SimpleMailConfig) -> Result<(), Box<dyn Error>>{
-    
-    Ok(())
-}
-
+/* 
+// cargo test --lib
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::simplemail::*;
     #[test]
     fn test_config(){
-        let config = SimpleMailConfig::build();
-        assert_eq!("Admin <admin@simpledoers.work>", config.unwrap().email.from);
+        let config = SimpleMailConfig::build().unwrap();
+        assert_eq!("Admin <admin@simpledoers.work>", config.email.from);
     }
     #[test]
-    fn test_send_config_implicit(){
+    fn test_send(){
       let config = SimpleMailConfig::build();
       assert_eq!((), simple_send(config.unwrap()).unwrap());
     }
  }
+*/

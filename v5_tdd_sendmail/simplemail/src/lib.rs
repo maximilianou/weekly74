@@ -1,8 +1,9 @@
 // simplemail/src/lib.rs
 pub mod simplemail {
     use config::Config;
-//    use std::collections::HashMap;
+    use std::fs;
     use std::error::Error;
+    use chrono::{DateTime, Local};
 
     use lettre::{
         message::header::ContentType, transport::smtp::authentication::Credentials, Message,
@@ -81,13 +82,21 @@ pub mod simplemail {
     pub fn simple_send(config: SimpleMailConfig) -> Result<String, Box<dyn Error>> {
       tracing_subscriber::fmt::init();
 
+      let curr_time: DateTime<Local> = Local::now();
+      let curr_time_format = curr_time.format("%Y%m%d");
+      println!("{}", curr_time_format);
+      let subject =   format!("SD::{}::{}",curr_time_format,config.email.subject);
+
+      let contents = fs::read_to_string(String::from(config.email.body))
+      .expect("Should have been able to read the file");
+
       let email = Message::builder()
           .from(config.email.from.parse().unwrap())
           .reply_to(config.email.reply_to.parse().unwrap())
           .to(config.email.to.parse().unwrap())
-          .subject(config.email.subject)
+          .subject(subject)
           .header(config.email.header_content_type)
-          .body(String::from(config.email.body))
+          .body(contents)
           .unwrap();
   
       let creds = Credentials::new(config.mailer.credentials.usr.to_owned(), 

@@ -79,6 +79,19 @@ DONE: tailscale proxmox
 
 
 
+```
+top -n 1 -b | head -n5 > target/body.md
+
+debian@debian:~/projects/weekly74/v5_tdd_sendmail/simplemail$ top -n 1 -b | head -n5 > target/body.md
+```
+
+
+
+
+
+
+-------------------
+
 ```sh
 debian@debian:~/projects/weekly74/v5_tdd_sendmail/environment$ APP_cONFIG=123 cargo run
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s

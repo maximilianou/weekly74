@@ -40,7 +40,6 @@ pub mod simplemail {
             let settings = Config::builder()
                 // Add in `./settings.yaml`
                 .add_source(config::File::with_name("settings"))
-                .add_source(config::File::with_name(".env.json"))
                 .add_source(config::File::with_name(".env"))
                 // Add in settings from the environment (with a prefix of APP)
                 // Eg.. `APP_DEBUG=1 ./target/app` would set the `debug` key

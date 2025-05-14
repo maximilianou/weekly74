@@ -59,6 +59,7 @@ TODO: leptos
 TODO: api
 TODO: postgres
 TODO: CI
+  https://doc.rust-lang.org/cargo/guide/continuous-integration.html
 TODO: CD
 ```
 
@@ -96,6 +97,52 @@ debian@debian:~/projects/weekly74/v5_tdd_sendmail/simplemail$ top -n 1 -b | head
 ```
 
 
+
+
+
+```
+// https://doc.rust-lang.org/cargo/reference/build-script-examples.html
+
+// build.rs
+
+use std::process::Command;
+use std::env;
+use std::path::Path;
+
+fn main() {
+    let out_dir = env::var("OUT_DIR").unwrap();
+
+    // Note that there are a number of downsides to this approach, the comments
+    // below detail how to improve the portability of these commands.
+    Command::new("gcc").args(&["src/hello.c", "-c", "-fPIC", "-o"])
+                       .arg(&format!("{}/hello.o", out_dir))
+                       .status().unwrap();
+    Command::new("ar").args(&["crus", "libhello.a", "hello.o"])
+                      .current_dir(&Path::new(&out_dir))
+                      .status().unwrap();
+
+    println!("cargo::rustc-link-search=native={}", out_dir);
+    println!("cargo::rustc-link-lib=static=hello");
+    println!("cargo::rerun-if-changed=src/hello.c");
+}
+
+
+
+
+[build-dependencies]
+cc = "1.0"
+
+And rewrite the build script to use this crate:
+
+// build.rs
+
+fn main() {
+    cc::Build::new()
+        .file("src/hello.c")
+        .compile("hello");
+    println!("cargo::rerun-if-changed=src/hello.c");
+}
+```
 
 -------------------
 

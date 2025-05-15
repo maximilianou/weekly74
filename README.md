@@ -25,6 +25,8 @@ https://doc.rust-lang.org/book/ch12-06-writing-to-stderr-instead-of-stdout.html
 TODO: linux monitoring https://mmonit.com/monit/documentation/monit.html
 TODO: tailscale for development
 
+---------------
+
 dev01@srv21:~$ cat /etc/network/interfaces
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
@@ -47,6 +49,7 @@ iface ens18 inet static
 - subnet
 dev01@srv21:~$ tailscale up --advertise-exit-node --advertise-routes=192.168.1.0/24
 
+---------------
 
 TODO: docker-compose.yml
 TODO: docker-compose - leptos

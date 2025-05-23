@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+config = "0.15.11"
 lazy_static = "1.5.0"
+lettre = "0.11.16"
 regex = "1.11.1"

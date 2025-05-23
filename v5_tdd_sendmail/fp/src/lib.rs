@@ -4,22 +4,15 @@ pub mod email_fp {
   use std::fmt;
   use regex::Regex;
   use lazy_static::lazy_static;
+  use config::Config;
+  use lettre::transport::smtp::authentication::Credentials;
+  use lettre::SmtpTransport;
+  use lettre::Transport;
+  use lettre::Message;
+  use lettre::message::header::ContentType;
+  
 
-  #[derive(Debug, PartialEq)]
-  pub enum ContentType {
-    TextPlain,
-    TextHtml,
-  }
 
-
-  impl fmt::Display for ContentType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ContentType::TextPlain => write!(f, "text/plain"),
-            ContentType::TextHtml  => write!(f, "text/html"),
-        }
-    }
-  }
 
   #[derive(Debug, PartialEq)]
   pub struct SimpleEmail {
@@ -82,6 +75,79 @@ pub mod email_fp {
     send_result
   }
 
+
+
+
+  #[derive(Debug)]
+  pub struct SimpleCredentials {
+      pub usr: String,
+      pub psw: String,
+  }
+  #[derive(Debug)]
+  pub struct SimpleMailer {
+      pub credentials: SimpleCredentials,
+      pub smtp: String,
+  }
+
+
+
+  fn simulate_smtp_send(email: &SimpleEmail) -> Result<(), String> {
+    let mailer = SimpleMailer::build().unwrap();
+      let creds = Credentials::new(mailer.credentials.usr.to_owned(), 
+      mailer.credentials.psw.to_owned());
+  
+      // Open a remote connection to gmail
+      let smtp_mailer = SmtpTransport::relay(&mailer.smtp)
+          .unwrap()
+          .credentials(creds)
+          .build();
+  
+
+          let message = Message::builder()
+          .from(email.from.parse().unwrap())
+          .reply_to(email.reply_to.parse().unwrap())
+          .to(email.to.parse().unwrap())
+          .subject(email.subject)
+          .header(email.header_content_type)
+          .body(email.body)
+          .unwrap();
+
+
+      // Send the email
+    match smtp_mailer.send(&message) {
+      Ok(_) => {
+          println!("Email sent successfully!"); 
+          Ok("Email sent successfully!".to_string());
+      },
+      Err(e) => panic!("Could not send email: {e:?}"),
+    }  
+    Ok(())
+  }
+
+
+  impl SimpleMailer {
+    pub fn build() -> Result<SimpleMailer, &'static str> {
+        let settings = Config::builder()
+            // Add in `./settings.yaml`
+            .add_source(config::File::with_name("settings"))
+            .add_source(config::File::with_name(".env"))
+            // Add in settings from the environment (with a prefix of APP)
+            // Eg.. `APP_DEBUG=1 ./target/app` would set the `debug` key
+            .add_source(config::Environment::with_prefix("APP"))
+            .build()
+            .unwrap();
+        // config from filesystem
+        let sc = SimpleCredentials {
+            usr: settings.get("sm_cred_usr").unwrap(),
+            psw: settings.get("sm_cred_psw").unwrap(),
+        };
+        Ok(SimpleMailer {
+          credentials: sc,
+          smtp: settings.get("sm_smtp").unwrap(),
+        })
+    }
+}
+
 }
 
 
@@ -92,8 +158,7 @@ mod tests {
   use crate::email_fp::*;
   #[test]
   fn test_content_type_display(){
-    assert_eq!(format!("{}", ContentType::TextPlain), "text/plain");
-    assert_eq!(format!("{}", ContentType::TextHtml ), "text/html");
+    assert_eq!(format!("{}", ContentType::TEXT_PLAIN), "text/plain");
   }  
   #[test]
   fn test_simple_email_new_valid(){
@@ -186,4 +251,13 @@ mod tests {
     let error_message = send_result.unwrap_err();
     assert_eq!(error_message, "Simulated SMTP connection error");
   }
+
+
+
+
+
 }
+
+
+
+

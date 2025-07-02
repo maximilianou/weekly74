@@ -1,6 +1,23 @@
-TODO: Implement this draft
+
+-----------------------------------------
+TODO: Implement web chat with topics
+-----------------------------------------
+
 
 ```
+user01(topicA, topicB, topicC), 
+user02(topicA, topicC), 
+user03(topicB, topicC),
+user04(topicA)
+
+
+```
+
+-----------------------------------------
+TODO: Implement this draft mqtt rust
+-----------------------------------------
+
+```rs
 use async_trait::async_trait; // Per usare trait asincroni
 use rumqttc::{AsyncClient, MqttOptions, QoS};
 use std::time::Duration;
@@ -58,7 +75,7 @@ impl MqttDriver for RealMqttDriver {
         // Avvia l'eventloop in un task separato per gestire la ricezione dei messaggi
         let event_sender = self.sender.clone();
         let handle = task::spawn(async move {
-            loop {
+            loop {  
                 match eventloop.poll().await {
                     Ok(rumqttc::Event::Incoming(rumqttc::Incoming::Publish(p))) => {
                         let payload_str = String::from_utf8_lossy(&p.payload).to_string();
@@ -139,7 +156,7 @@ impl MqttDriver for RealMqttDriver {
 ```
 
 
-```
+```rs
 use std::collections::HashMap;
 use tokio::sync::mpsc;
 use tokio::time::{self, Duration};
@@ -206,7 +223,7 @@ impl MqttDriver for MockMqttDriver {
 }
 ```
 
-```
+```rs
 // ---
 // E poi la tua MqttClient userà un Box<dyn MqttDriver>
 // ---
@@ -245,7 +262,7 @@ impl MqttClient {
 ```
 
 
-```
+```rs
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -301,7 +318,7 @@ mod tests {
 ```
 
 
-```
+```rs
 // Questo sarebbe nel tuo main.rs o in un file di test di integrazione
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

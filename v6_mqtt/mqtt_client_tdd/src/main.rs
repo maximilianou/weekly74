@@ -1,12 +1,14 @@
 use std::error::Error;
 use std::time::Duration;
+use mqtt_client_tdd::MqttClient;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
   println!("Starting RealMqttDriver example..");
   let broker_url = "localhost";
   let client_id = "my_rust_client";
   let mut real_driver = RealMqttDriver::new();
-  let mut mqtt_driver = MqttClient::new(Box::new(real_driver), client_id);
+  let mut mqtt_client = MqttClient::new(Box::new(real_driver), client_id);
   println!("Attenpting to connect..");
   mqtt_client.connect(broker_url).await;
   println!("Connected!");
@@ -19,7 +21,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
   println!("Subscribe to : {}", topic_sub);
   println!("Listening for incoming messages... ( press Ctrl+C to exit ) ");
   loop {
-    if let Some(message) = mqtt_client.receive().await {
+    if let Some(message) = mqtt_client.received().await {
       println!("Received: {}", message);
     }else{
       println!("Disconnected from broker or event loop terminated.");

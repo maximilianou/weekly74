@@ -39,7 +39,7 @@ impl RealMqttDriver {
 
 #[async_trait]
 impl MqttDriver for RealMqttDriver {
-  async fn connect(&self, broker_url: &str, client_id: &str) -> Result<(), Box<dyn Error>> {
+  pub async fn connect(&self, broker_url: &str, client_id: &str) -> Result<(), Box<dyn Error>> {
     let mut mqtt_options = MqttOptions::new(client_id, broker_url.to_string(), 1883);
     mqtt_options.set_keep_alive( Duration::from_secs(5) );
     let (client, mut eventloop) = AsyncClient::new(mqtt_options, 10);
@@ -72,7 +72,7 @@ impl MqttDriver for RealMqttDriver {
     Ok(())
   }
 
-  async fn publish(&self, topic: &str, payload: &[u8]) -> Result<(), Box<dyn Error>> {
+  pub async fn publish(&self, topic: &str, payload: &[u8]) -> Result<(), Box<dyn Error>> {
     if let Some(client) = &self.client {
       client.publish(topic, QoS::AtLeastOnce, false, payload).await?;
       println!("RealMqttDriver published to topoc: {}", topic);
@@ -82,7 +82,7 @@ impl MqttDriver for RealMqttDriver {
     }
   }
 
-  async fn subscribe(&self, topic &str ) -> Result<(), Box<dyn Error>> {
+  pub async fn subscribe(&self, topic &str ) -> Result<(), Box<dyn Error>> {
     if let Some(client) = &self.client {
       client.subscribe(topic, QoS::AtLeastOnce).await?;
       println("RealMqttDriver subscribed to topic :  {}", topic);
@@ -93,7 +93,7 @@ impl MqttDriver for RealMqttDriver {
 
   }
 
-  async fn receive(&mut self ) -> Option<String> {
+  pub async fn receive(&mut self ) -> Option<String> {
     self.receiver.recv().await
   }
 

@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::time::Duration;
 use mqtt_client_tdd::MqttClient;
+use mqtt_client_tdd::mqtt_driver::RealMqttDriver;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

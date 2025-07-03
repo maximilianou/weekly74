@@ -1,8 +1,6 @@
 use std::error::Error;
 use tokio::sync::mpsc;
-
-use mqtt_driver::*;
-
+pub mod mqtt_driver;
 pub struct MqttClient {
   _inner_client: (),
   _broker_url: String,

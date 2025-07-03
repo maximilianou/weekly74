@@ -1,5 +1,8 @@
+pub mod mqtt_driver {
+
 use async_trait::async_trait;
 use rumqttc::{AsyncClient, MqttOptions, QoS};
+use rumqttc::Incoming;
 use std::time::Duration;
 use tokio::sync::mpsc;
 use tokio::task;
@@ -9,12 +12,12 @@ use std::error::Error;
 trait MqttDriver : Send + Sync {
   async fn connect(&self, broker_url: &str, client_id: &str ) -> Result<(), Box<dyn Error>>;
   async fn publish(&self, topic: &str, payload: &[u8]) -> Result<(), Box<dyn Error>>;
-  async fn subscribe($self, topic: &str) -> Result<(), Box<dyn Error>>;
+  async fn subscribe(&self, topic: &str) -> Result<(), Box<dyn Error>>;
   async fn receive(&mut self) -> Option<String>;
 }
 
 pub struct MqttClient {
-  driver: Box<dyn MqttDriver>;
+  driver: Box<dyn MqttDriver>,
 }
 
 pub struct RealMqttDriver {
@@ -39,15 +42,15 @@ impl RealMqttDriver {
 
 #[async_trait]
 impl MqttDriver for RealMqttDriver {
-  pub async fn connect(&self, broker_url: &str, client_id: &str) -> Result<(), Box<dyn Error>> {
+  async fn connect(&self, broker_url: &str, client_id: &str) -> Result<(), Box<dyn Error>> {
     let mut mqtt_options = MqttOptions::new(client_id, broker_url.to_string(), 1883);
     mqtt_options.set_keep_alive( Duration::from_secs(5) );
-    let (client, mut eventloop) = AsyncClient::new(mqtt_options, 10);
+    let (_client, mut eventloop) = AsyncClient::new(mqtt_options, 10);
     let event_sender = self.sender.clone();
     let handle = task::spawn(async move {
       loop {
         match eventloop.poll().await {
-          Ok(rumqttc::Event::Incoming(rumqttc::Incoming::Publish(p))) => {
+          Ok(rumqttc::Event::Incoming(Incoming::Publish(p))) => {
             let payload_str = String::from_utf8_lossy(&p.payload).to_string();
             println!("RealMqttDriver received message on topic '{}' : '{}'", p.topic, payload_str);
             if let Err(e) = event_sender.send(payload_str).await {
@@ -55,14 +58,14 @@ impl MqttDriver for RealMqttDriver {
               break;
             }
           },
-          Ok(rumqtt::Event::Incoming(rumqtt::Incoming::ConnAck(_))) => {
+          Ok(rumqttc::Event::Incoming(Incoming::ConnAck(_))) => {
             println!("RealMqttDriver connected!");
           },
           Ok(_) => {
             // Ignora altri messagi
           },
           Err(e) => {
-            eprlintln!("RealMqttDriver eventloop error: {:?}", e);
+            eprintln!("RealMqttDriver eventloop error: {:?}", e);
             break;
           }
         }
@@ -72,7 +75,7 @@ impl MqttDriver for RealMqttDriver {
     Ok(())
   }
 
-  pub async fn publish(&self, topic: &str, payload: &[u8]) -> Result<(), Box<dyn Error>> {
+   async fn publish(&self, topic: &str, payload: &[u8]) -> Result<(), Box<dyn Error>> {
     if let Some(client) = &self.client {
       client.publish(topic, QoS::AtLeastOnce, false, payload).await?;
       println!("RealMqttDriver published to topoc: {}", topic);
@@ -82,18 +85,18 @@ impl MqttDriver for RealMqttDriver {
     }
   }
 
-  pub async fn subscribe(&self, topic &str ) -> Result<(), Box<dyn Error>> {
+   async fn subscribe(&self, topic: &str ) -> Result<(), Box<dyn Error>> {
     if let Some(client) = &self.client {
       client.subscribe(topic, QoS::AtLeastOnce).await?;
-      println("RealMqttDriver subscribed to topic :  {}", topic);
+      println!("RealMqttDriver subscribed to topic :  {}", topic);
       Ok(())
-    }else{
-      Err("Error clienet not connected".into());
+    } else {
+      Err("Error clienet not connected".into())
     }
 
   }
 
-  pub async fn receive(&mut self ) -> Option<String> {
+  async fn receive(&mut self ) -> Option<String> {
     self.receiver.recv().await
   }
 
@@ -101,4 +104,4 @@ impl MqttDriver for RealMqttDriver {
 
 
 
-
+}

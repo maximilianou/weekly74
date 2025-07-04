@@ -1,4 +1,3 @@
-pub mod mqtt_driver {
 
 use async_trait::async_trait;
 use rumqttc::{AsyncClient, MqttOptions, QoS};
@@ -47,7 +46,7 @@ impl MqttDriver for RealMqttDriver {
     mqtt_options.set_keep_alive( Duration::from_secs(5) );
     let (_client, mut eventloop) = AsyncClient::new(mqtt_options, 10);
     let event_sender = self.sender.clone();
-    let handle = task::spawn(async move {
+    let _handle = task::spawn(async move {
       loop {
         match eventloop.poll().await {
           Ok(rumqttc::Event::Incoming(Incoming::Publish(p))) => {
@@ -104,4 +103,3 @@ impl MqttDriver for RealMqttDriver {
 
 
 
-}
